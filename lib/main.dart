@@ -24,10 +24,11 @@ class App extends StatelessWidget {
             url: 'ws:...',
             password: '...',
           ),
-          builders: {
-            'waiting': (context, name) => const Waiting(),
-            'chat': (context, name) => const Chat(),
-            'ending': (context, name) => const Ending(),
+          builder: (context, name) => switch (name) {
+            'waiting' => const Waiting(),
+            'chat' => const Chat(),
+            'ending' => const Ending(),
+            _ => const SizedBox(),
           },
         ),
       ),

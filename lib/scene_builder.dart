@@ -13,18 +13,14 @@ typedef SceneWidgetBuilder = Widget Function(
 );
 
 class SceneBuilder extends StatefulWidget {
-  SceneBuilder({
+  const SceneBuilder({
     super.key,
     required this.config,
-    required Map<String, SceneWidgetBuilder> builders,
-    this.fallbackBuilder,
-  }) : builders = builders.map(
-          (key, value) => MapEntry(key.toLowerCase(), value),
-        );
+    required this.builder,
+  });
 
   final ObsConfig config;
-  final Map<String, SceneWidgetBuilder> builders;
-  final SceneWidgetBuilder? fallbackBuilder;
+  final SceneWidgetBuilder builder;
 
   @override
   State<SceneBuilder> createState() => _SceneBuilderState();
@@ -78,16 +74,11 @@ class _SceneBuilderState extends State<SceneBuilder> {
 
   @override
   Widget build(BuildContext context) {
-    final builder = switch (currentSceneName) {
-      String value when widget.builders.containsKey(value) =>
-        widget.builders[value]!,
-      _ => widget.fallbackBuilder ?? (context, name) => const SizedBox(),
-    };
     return AnimatedSwitcher(
       duration: const Duration(milliseconds: 300),
       child: KeyedSubtree(
         key: ValueKey(currentSceneName),
-        child: builder(context, currentSceneName),
+        child: widget.builder(context, currentSceneName),
       ),
     );
   }
